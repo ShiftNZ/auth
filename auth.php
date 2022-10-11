@@ -135,10 +135,6 @@ class auth_plugin_saml extends auth_plugin_base {
         return $moodleattributes;
     }
 
-    function prevent_local_passwords() {
-        return true;
-    }
-    
     /**
      * Returns true if this authentication plugin is 'internal'.
      *
@@ -170,7 +166,10 @@ class auth_plugin_saml extends auth_plugin_base {
     public function loginpage_hook() {
         global $CFG;
 
-        if (empty($CFG->alternateloginurl) && !(isset($_GET['saml']) && $_GET['saml'] === 'false')) {
+        if (!empty($CFG->alternateloginurl)) {
+            // Naughty hack to have auth_saml enabled but not redirect to their login page.
+            $CFG->alternateloginurl = '';
+        } else if (!(isset($_GET['saml']) && $_GET['saml'] === 'false')) {
             $CFG->alternateloginurl = $CFG->wwwroot.'/auth/saml/login.php';
         }
 
