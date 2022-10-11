@@ -102,7 +102,14 @@ $frm = data_submitted();
 echo '<center>';
 if (in_array('saml', $authsequence)) {
     if (isset($samlconfig->samllogoimage) && $samlconfig->samllogoimage != null) {
-        echo '<a href="' . $samlurl . '"><img src="'.$samlconfig->samllogoimage.'" border="0" alt="SAML login" ></a>';
+        $samllogoimage = $samlconfig->samllogoimage;
+        if (is_file($CFG->dirroot.$samllogoimage) || is_file($CFG->dirroot.'/'.$samllogoimage)) {
+            echo '<a href="' . $samlurl . '"><img src="'.$samllogoimage.'" border="0" alt="SAML login" ></a>';
+        } else {
+            // It is a text and not a file.
+            $classes = "m-auto d-block";
+            echo '<a href="'.$samlurl.'" class="'.$classes.'"><button class="saml_loginbutton_text">'.$samllogoimage.'</button></a>';
+        }
     }
     if (isset($samlconfig->samllogoinfo)) {
         echo "<div class='desc'>$samlconfig->samllogoinfo</div>";
